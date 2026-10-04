@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ALL AI — Voice</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,"Noto Sans JP",sans-serif;color:#eaffff}
+body{min-height:100vh;background:linear-gradient(rgba(0,8,16,.22),rgba(0,8,18,.62)),url("background.png") center/cover fixed no-repeat}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 30%,rgba(0,255,210,.08),transparent 35%)}
+.wrap{min-height:100vh;padding:20px}.top{max-width:1300px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:13px 18px;border:1px solid #2cf0ff55;background:#00121ccc;border-radius:16px;backdrop-filter:blur(10px)}
+.logo{font-size:27px;font-weight:900;letter-spacing:5px;color:#7dfff0}.live{font-size:12px;color:#83ffbf}.live:before{content:"●";margin-right:6px}
+.grid{max-width:1300px;margin:18px auto;display:grid;grid-template-columns:220px 1fr 270px;gap:16px}
+.card{background:#00121ccc;border:1px solid #2cf0ff55;border-radius:18px;backdrop-filter:blur(11px);box-shadow:0 0 28px #00d9ff12}
+.side{padding:15px}.side h3{font-size:12px;color:#75eaff;letter-spacing:2px;margin:0 0 12px}.metric{padding:13px;margin:9px 0;border:1px solid #6eefff22;border-radius:12px;background:#001a2c99}.metric b{display:block;font-size:24px}.metric span{font-size:11px;color:#8baab7}
+.core{padding:20px;min-height:650px;display:flex;flex-direction:column}.coretitle{color:#70f5ff;letter-spacing:2px;font-size:12px}.core h1{font-size:38px;letter-spacing:5px;margin:5px 0}.state{font-size:12px;color:#9dbbc4}
+.orb{width:185px;height:185px;margin:12px auto 14px;border-radius:50%;display:grid;place-items:center;border:2px solid #4dffe4aa;box-shadow:0 0 35px #00ffd544,inset 0 0 35px #00ffd522;position:relative}
+.orb:before,.orb:after{content:"";position:absolute;border-radius:50%;border:1px solid #48eaff66}.orb:before{inset:15px}.orb:after{inset:-12px;border-style:dashed;animation:spin 10s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.eye{font-size:52px;color:#72ffe4;text-shadow:0 0 20px #72ffe4}
+.chat{flex:1;min-height:250px;overflow:auto;padding:8px}.msg{max-width:82%;padding:12px 14px;margin:9px 0;border-radius:13px;line-height:1.6;font-size:14px;white-space:pre-wrap}.ai{background:#06303a99;border:1px solid #5dfff344}.user{margin-left:auto;background:#ffffff0d;border:1px solid #ffffff18}
+.controls{display:flex;gap:8px;margin-top:12px}.controls input{flex:1;min-width:0;padding:14px;border-radius:12px;border:1px solid #46efff55;background:#000b14cc;color:#fff;outline:0}.btn{border:1px solid #5fffee;background:#0bffff16;color:#eaffff;border-radius:12px;padding:11px 14px;cursor:pointer;font-weight:700}.btn:hover{background:#0bffff2d}.mic.active{background:#ff4f6d33;border-color:#ff7590}
+.auto{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:12px;color:#a8c7d0}.auto input{accent-color:#54ffe0}
+.right{padding:16px}.right h3{color:#75eaff;font-size:14px;margin:0}.row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #7eefff18;font-size:13px}.ok{color:#83ffbe}.bar{height:6px;background:#ffffff12;border-radius:9px;overflow:hidden;margin-top:5px}.bar i{display:block;height:100%;background:#55ffe0}.total{margin-top:15px;padding:15px;border-radius:13px;background:#00eaff0c;border:1px solid #5fffee33}.total b{font-size:28px;color:#86fff1}
+.note{margin-top:12px;font-size:11px;line-height:1.6;color:#9db7c0}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}.side,.right{display:none}.core{min-height:700px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="logo">ALL AI</div><div class="live" id="status">SYSTEM ONLINE</div></header>
+<main class="grid">
+<aside class="card side">
+<h3>SYSTEM MONITOR</h3>
+<div class="metric"><b id="m1">READY</b><span>VOICE INPUT</span></div>
+<div class="metric"><b id="m2">ONLINE</b><span>AI CONNECTION</span></div>
+<div class="metric"><b id="m3">JP</b><span>LANGUAGE</span></div>
+<div class="metric"><b id="m4">AUTO</b><span>VOICE OUTPUT</span></div>
+</aside>
+
+<section class="card core">
+<div class="coretitle">ARTIFICIAL INTELLIGENCE / VOICE CORE</div>
+<h1>ALL</h1><div class="state" id="state">音声AIシステム 起動済み</div>
+<div class="orb"><div class="eye">∞</div></div>
+<div class="chat" id="chat"><div class="msg ai">こんにちは。ALL AIです。<br>マイクを押して話すか、下の入力欄に質問してください。</div></div>
+<div class="controls">
+<input id="input" placeholder="ALL AIに質問する..." autocomplete="off">
+<button class="btn" id="send">送信</button>
+<button class="btn mic" id="mic">🎙️</button>
+</div>
+<label class="auto"><input type="checkbox" id="speak" checked> AIの回答を自動で読み上げる</label>
+</section>
+
+<aside class="card right">
+<h3>性能チェック表</h3>
+<div class="row"><span>回答速度</span><span class="ok">98%</span></div><div class="bar"><i style="width:98%"></i></div>
+<div class="row"><span>文章理解</span><span class="ok">96%</span></div><div class="bar"><i style="width:96%"></i></div>
+<div class="row"><span>音声入力</span><span class="ok">95%</span></div><div class="bar"><i style="width:95%"></i></div>
+<div class="row"><span>音声出力</span><span class="ok">97%</span></div><div class="bar"><i style="width:97%"></i></div>
+<div class="row"><span>安定性</span><span class="ok">97%</span></div><div class="bar"><i style="width:97%"></i></div>
+<div class="total">総合性能<br><b>96.6%</b><div class="ok">● SYSTEM READY</div></div>
+<div class="note">※性能値はUI上の表示値です。実際のAI品質・通信速度を測定した値ではありません。</div>
+</aside>
+</main>
+</div>
+
+<script>
+const API_URL = "https://YOUR-WORKER.workers.dev/chat";
+const input=document.getElementById("input"), chat=document.getElementById("chat");
+const send=document.getElementById("send"), mic=document.getElementById("mic");
+const state=document.getElementById("state"), status=document.getElementById("status");
+const speak=document.getElementById("speak");
+
+function add(text,cls){const d=document.createElement("div");d.className="msg "+cls;d.textContent=text;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;return d}
+function say(text){
+  if(!speak.checked || !("speechSynthesis" in window)) return;
+  speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text);
+  u.lang="ja-JP"; u.rate=.98; u.pitch=1; speechSynthesis.speak(u);
+}
+async function ask(text){
+  if(!text.trim()) return;
+  add(text,"user"); input.value=""; state.textContent="AIが考えています…"; status.textContent="PROCESSING";
+  const loading=add("……","ai");
+  try{
+    const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:text})});
+    if(!r.ok) throw new Error("API "+r.status);
+    const data=await r.json(); loading.remove();
+    const answer=data.text || "回答を取得できませんでした。";
+    add(answer,"ai"); say(answer);
+    state.textContent="音声AIシステム 起動済み"; status.textContent="SYSTEM ONLINE";
+  }catch(e){
+    loading.textContent="AI接続に失敗しました。Cloudflare WorkerのURL設定を確認してください。";
+    state.textContent="接続エラー"; status.textContent="CONNECTION ERROR";
+  }
+}
+send.onclick=()=>ask(input.value); input.addEventListener("keydown",e=>{if(e.key==="Enter")ask(input.value)});
+
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(SR){
+  const rec=new SR(); rec.lang="ja-JP"; rec.interimResults=false; rec.continuous=false;
+  rec.onstart=()=>{mic.classList.add("active");state.textContent="聞いています…";document.getElementById("m1").textContent="LISTENING"};
+  rec.onresult=e=>{const t=e.results[0][0].transcript;input.value=t;ask(t)};
+  rec.onerror=()=>{mic.classList.remove("active");document.getElementById("m1").textContent="READY";state.textContent="音声入力を確認してください"};
+  rec.onend=()=>{mic.classList.remove("active");document.getElementById("m1").textContent="READY"};
+  mic.onclick=()=>{try{rec.start()}catch(e){}};
+}else{
+  mic.onclick=()=>alert("このブラウザでは音声入力に対応していません。Chromeなどで試してください。");
+}
+</script>
+</body>
+</html>
